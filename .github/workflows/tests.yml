@@ -7,23 +7,23 @@ on:
 #     branches: [ main ]
 
 jobs:
-  find_posts: # lists subdirectories
+  list_posts: # lists subdirectories
     runs-on: ubuntu-latest
     outputs:
-      dir: ${{steps.list-dirs.outputs.dir}} # generate output name dir by using inner step output
+      posts: ${{steps.list-posts.outputs.posts}} # generate output name dir by using inner step output
     steps:
       - uses: actions/checkout@v2
-      - id: list-dirs # Give it an id to handle to get step outputs in the outputs key above
-        run: echo "::set-output name=dir::$(ls blog -d */ | jq -R -s -c 'split("\n")[:-1]')"
+      - id: list-posts # Give it an id to handle to get step outputs in the outputs key above
+        run: echo "::set-output name=posts::$(ls blog -d */ | jq -R -s -c 'split("\n")[:-1]')"
         # Define step output named dir base on ls command transformed to JSON thanks to jq
-  loop:
+  test_posts:
     runs-on: ubuntu-latest
-    needs: [directories] # Depends on previous job
+    needs: [list_posts] # Depends on previous job
     strategy:
       matrix:
-        dir: ${{fromJson(needs.find_posts.outputs.dir)}} # List matrix strategy from directories dynamically
+        post: ${{fromJson(needs.list_posts.outputs.posts)}} # List matrix strategy from directories dynamically
     steps:
-      - run: echo ${{matrix.dir}}
+      - run: echo ${{matrix.post}}
 # jobs:
 #   build:
 #     runs-on: ubuntu-latest
