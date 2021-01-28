@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - id: list-posts # Give it an id to handle to get step outputs in the outputs key above
-        run: cd posts && echo "::set-output name=posts::$(ls -d */ | jq -R -s -c 'split("\n")[:-1]')"
+        run: cd posts && echo "::set-output name=posts::$(ls -d */ | jq -R -s -c 'split("/\n")[:-1]')"
         # Define step output named dir base on ls command transformed to JSON thanks to jq
   test_posts:
     runs-on: ubuntu-latest
@@ -23,31 +23,31 @@ jobs:
       matrix:
         post: ${{fromJson(needs.list_posts.outputs.posts)}} # List matrix strategy from directories dynamically
     steps:
-      - run: echo ${{matrix.post}}
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - uses: actions/checkout@v2
-#       - name: Set up Python 3.8
-#         uses: actions/setup-python@v2
-#         with:
-#           python-version: 3.8
-#       - name: Install dependencies
-#         run: |
-#           python -m pip install --upgrade pip
-#           python -m pip install poetry
-#           poetry config virtualenvs.create false
-#           poetry install
-#       - name: Lint with flake8
-#         run: |
-#           # stop the build if there are Python syntax errors or undefined names
-#           poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-#           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-#           poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-#       - name: Format with black
-#         run: poetry run black .
-#       - name: Test with pytest
-#         run: |
-#           poetry run pytest
+      # - uses: actions/checkout@v2
+      # - name: Set up Python 3.8
+      #   uses: actions/setup-python@v2
+      #   with:
+      #     python-version: 3.8
+      - name: Install dependencies
+        run: |
+          cd matrix.post
+          echo pwd
+          python -m pip install --upgrade pip
+          python -m pip install poetry
+          poetry config virtualenvs.create false
+          poetry install
+      - name: Lint with flake8
+        run: |
+          echo pwd
+          # stop the build if there are Python syntax errors or undefined names
+          poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Format with black
+        run: |
+          echo pwd
+          poetry run black .
+      - name: Test with pytest
+        run: |
+          echo pwd
+          poetry run pytest
