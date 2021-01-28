@@ -16,3 +16,7 @@ The goals are:
 (within reason)
 
 ## Structure of a Post
+
+
+## The Medium API
+[Docs](https://github.com/Medium/medium-api-docs)
