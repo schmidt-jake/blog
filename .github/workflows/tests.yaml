@@ -21,10 +21,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [list_posts] # Depends on previous job
     strategy:
+      fail-fast: false
       matrix:
         post: ${{fromJson(needs.list_posts.outputs.posts)}} # List matrix strategy from directories dynamically
     steps:
-      # - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
